@@ -13,12 +13,14 @@ A streamlined toolkit for downloading HuggingFace models and integrating them wi
 - **Animated progress tracking** with real-time statistics
 - **One-command Ollama integration** with ready-to-use Modelfiles
 - **Storage management** to keep your system clean
+- **✅ Proven Zed IDE integration** with Qwen3-Coder-30B-GGUF (17GB, 53 tokens/s)
 
 ## 📦 What's Included
 
 - **`monitor_download.sh`** - Enhanced download monitor with auto-detection
 - **`HUGGINGFACE_MODEL_DOWNLOAD_GUIDE.md`** - Complete download and integration guide  
 - **`PROJECT_STATUS.md`** - Documentation and lessons learned
+- **`QWEN3_CODER_COMPARISON.md`** - Model comparison with deep research analysis & Zed IDE setup ✅
 
 ## 🎯 Quick Start
 
