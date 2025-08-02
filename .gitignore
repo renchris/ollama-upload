@@ -1,0 +1,39 @@
+# Model files and downloads
+*.safetensors
+model-*.bin
+model.onnx
+pytorch_model.bin
+
+# Large model directories
+**/model-*-of-*.safetensors
+Qwen*/
+CodeLlama*/
+DeepSeek*/
+Llama*/
+Mistral*/
+
+# Cache and temporary files
+/tmp/
+*.cache
+*_cache.txt
+.DS_Store
+
+# Git LFS objects (if accidentally included)
+.git/lfs/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log* 
