@@ -1,28 +1,28 @@
-# HuggingFace Model Download Guide for AI Assistants
+# HuggingFace to Ollama Integration Guide
 
 ## Prerequisites & Hardware Check
 ```bash
-df -h .                                                    # Disk space
-system_profiler SPHardwareDataType | grep Memory          # RAM (macOS)
-git lfs version                                            # Git LFS installed
+df -h .                                                    # Check disk space
+system_profiler SPHardwareDataType | grep Memory          # Check RAM (macOS)
+git lfs version                                            # Verify Git LFS installed
 ```
 
 **Memory Requirements:**
-- 7B models: ~14-20GB RAM | 13B: ~26-40GB | 32B: ~64-120GB | 70B+: 140GB+ (datacenter only)
+- 7B models: ~14-20GB RAM | 13B: ~26-40GB | 32B: ~64-120GB | 70B+: 140GB+
 - **Rule**: Model size × 2 = minimum RAM needed
 
-## Setup & Download Process
+## Complete Workflow
 
-### 1. Clone Repository
+### 1. Download from HuggingFace
 ```bash
 mkdir -p ~/Development/ollama-upload/[MODEL_NAME]
 cd ~/Development/ollama-upload/[MODEL_NAME]
 git lfs clone https://huggingface.co/[OWNER]/[MODEL_NAME] .
 ```
 
-### 2. Monitor Download (Enhanced Script)
+### 2. Monitor Download Progress
 ```bash
-# Copy or create monitor_download.sh
+# Copy monitoring script
 cp ~/Development/ollama-upload/monitor_download.sh .
 
 # Auto-detect everything
@@ -55,58 +55,53 @@ ollama create [model-name] -f Modelfile
 ollama run [model-name] "Test message"
 ```
 
-## Critical System Understanding
+## Model Storage Understanding
 
-### Working Models vs Project Files
-- **Working models**: `~/.ollama/models/` (separate, persistent)
-- **Project files**: Local download directories (temporary)
-- **Modelfiles**: Configuration only, reference working models
-- **Safe to delete**: Project directories don't affect working Ollama models
+### File Locations
+- **Working models**: `~/.ollama/models/` (persistent, used by Ollama)
+- **Project files**: Local download directories (temporary, safe to delete after integration)
+- **Modelfiles**: Configuration templates that reference working models
 
-### Systematic Cleanup (Prevents 1TB+ Waste)
+### Download Management
 ```bash
-# Find ALL model directories (not just target)
+git lfs status                                   # Check download status
+git lfs pull                                     # Resume interrupted download
+find . -name "model-*.safetensors" | wc -l      # Count model files
+```
+
+## Hardware-Appropriate Model Selection
+
+### 64GB M1 Max (Recommended)
+- **Best choices**: CodeLlama-13B, Qwen2.5-Coder-14B, DeepSeek-Coder-33B
+- **Currently working**: devstral:24b, deepseek-r1:1.5b, qwen3:8b
+- **Avoid**: >35B parameters, >50GB downloads
+
+### Storage Cleanup
+```bash
+# Find unused model directories
 for dir in */; do
     if [[ -f "$dir/config.json" && -f "$dir"/model-*.safetensors ]]; then
         model_name=$(basename "$dir" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
         if ! ollama list | grep -q "$model_name"; then
             size=$(du -sh "$dir" | cut -f1)
-            echo "UNUSED MODEL: $dir ($size) - not in ollama list"
+            echo "UNUSED: $dir ($size) - not integrated with Ollama"
         fi
     fi
 done
-
-# Remove unused models incompatible with hardware
-# Check hardware compatibility BEFORE downloading
 ```
 
-## Model Selection by Hardware
+## Best Practices
 
-### 64GB M1 Max (Target System)
-- **Recommended**: CodeLlama-13B, Qwen2.5-Coder-14B, DeepSeek-Coder-33B
-- **Avoid**: >35B parameters, >50GB downloads
-- **Working**: devstral:24b, deepseek-r1:1.5b, qwen3:8b
-
-### Download Commands
-```bash
-git lfs status                                   # Check status
-git lfs pull                                     # Resume download
-find . -name "model-*.safetensors" | wc -l      # Count files
-```
-
-## AI Assistant Execution Notes
-
-### Pre-execution
+### Before Download
 1. Verify hardware compatibility (memory × 2 rule)
-2. Check disk space (model size × 1.5)
-3. Validate model choice against constraints
+2. Check available disk space (model size × 1.5)
+3. Confirm model choice meets your requirements
 
-### Post-execution
-1. Verify complete download
-2. **Audit ALL model directories** (not just target)
-3. Remove unused models incompatible with hardware
-4. Test integration
+### After Integration
+1. Test the model with Ollama
+2. Clean up temporary download directories
+3. Verify integration with your development tools
 
 ---
 
-**Target**: Claude Sonnet 4.0 | **Updated**: August 2024 
+**Target**: Local AI Development | **Updated**: August 2024 
